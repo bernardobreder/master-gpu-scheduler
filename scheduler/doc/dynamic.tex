@@ -1,0 +1,147 @@
+
+\subsection{Obtaining  kernel submission set by solving a Knapsack Problem} 
+
+In order to obtain the kernel set  to be submitted,  we modeled our problem as a knapsack problem  and solved it by using the  dynamic programming method. 
+To model our problem as a  classical knapsack problem, we had to accomplish some adaptions in our proposal. At first, we need to  consider that  kernels' weights and GPU's capacity are represented by an integer.  So, instead of representing the capacity of the  GPU by  three elements, $R_0, R_1$ and $R_2$, we calculated  a unique value W to represent it. Analogously,  the resources required by each  kernel $k_i$, represented also  by three values, were reduced to a unique one, $\theta _i$, by linearizing them. So, W  $=$  $(R_0 + 1)\times (R_1 +1) \times (R_2 +1) \times NSM^3$,  where $NSM$ is the number of SMs, and for each kernel $k_i$,
+  $\theta_i$ $=$ ($\omega_{i0} \times R_1 \times R_2 \times NSM^2) + (\omega_{i1} \times R_2 \times NSM) + \omega_{i2}$, where  $\omega_{i0}$  is the amount of shared memory required by  kernel $i$ in all SMs, and  $\omega_{i1}$ and  $\omega_{i2}$ are the number of registers and threads  required by   kernel $i$ in all SMs, respectively.
+
+Algorithm 2 presents the main procedure of the dynamic method used to solve our problem. It requires the  following variables and constants:
+
+ \begin{itemize}
+      \item W - constant, representing the total capacity of the GPU 
+      \item N - constant, number of kernels
+      \item $temp\_W$ -    variable initialized with  W
+      \item  $\beta$ -  variable, representing a set of kernels
+ \item $\theta_i$ -  constant,  representing the weight of $kernel_i$
+ \item $v_i$ - constant, representing the value of   $kernel_i$
+ \item $M$ -  variable,  matrix of size $(N+1)\times (W+1)$ built by the dynamic programming method
+     \item  $LK$ - list of ordered kernels
+  \end{itemize}
+  
+Basically, algorithm 2 works as follows. In lines 2 and 3, the variables $\beta$ and $temp\_W$ are initialized with a void set of kernels and the total capacity of the GPU, respectively.  In line 4, the  KnapsackMatrix function is called with the parameter $KernelList$, containing all kernels to be ordered, and  returns the matrix $M$. 
+For each kernel $k_\alpha$, in line 5, if there are remaining resources,  the possibility of including  $k_\alpha$ is evaluated by consulting the matrix M. 
+Line 7 tests if  $k_\alpha$ was selected  by the dynamic programming  method.
+If the value of the current line $\alpha$ is different from the previous one  in column $temp\_W$ (meaning that the dynamic programming method selected $k_\alpha$), it is  subtracted by  $\theta_\alpha$ and  $k_\alpha$ is included in the set $\beta$ (lines 8 and 9). After that, $LK$ receives  the elements of  $\beta$  ordered in descending order of value  by $OrderSet$ (line 10).
+
+\begin{algorithm}[htb]
+\caption{Dynamic programming-  Main procedure}\label{alg:dynamic}
+\footnotesize{
+\begin{algorithmic}[1]
+\Function{GetKernelsToSubmit}{$KernelList$, $R^{av}$}
+ \State $ \beta  \gets \emptyset$ 
+ 
+ \State $temp\-W$  $\gets$ W
+ 
+ \State $M \gets \Call{KnapsackMatrix}{KernelList}$
+ 
+ \For{$\alpha \gets N$ to $1$}
+ 
+  \If{$temp\_W$ $ > 0$}
+   \If{$M[\alpha][$temp\_W$] \neq M[\alpha-1][$temp\_W$]$}
+        \State $temp\_W$ $ \gets$ $temp\_W$ $ -  \theta_\alpha$
+  \State $\beta\gets\beta \cup k_{\alpha}$
+   \EndIf
+  \EndIf
+ \EndFor
+ \State $LK \gets OrderSet(\beta)$
+ \State \Return $LK$
+\EndFunction
+\end{algorithmic}
+}
+\end{algorithm}
+
+Algorithm 2 calls the function $KnapsackMatrix$, detailed in Algorithm 3,  which returns the matrix $M$.  A line of $M$ represents a kernel  while a column  represents a linearized  quantity of resources. This matrix is initialized in line 3 of Algorithm 3. It can be updated either in line 7  or line 9. In line 7,  a  cell of $M$ is copied to another one,   meaning that the object  (kernel $k_i$) is not selected to be included in  the knapsack (GPU) because it exceeds the remaining capacity of the knapsack, otherwise, it can be  included in the knapsack whether it results in some profit (line 9).
+
+\begin{algorithm}[htb]
+\caption{Dynamic programming- Building of matrix M}\label{alg:dynamic}
+\footnotesize{
+\begin{algorithmic}[1]
+\Function{KnapsackMatrix}{$KernelList$}
+ %\textbf{Input: } n, w$_1$ ,...,w$_N$, v$_1$ ,...,v$_N$
+%\State W $\gets$ $R_0\times R_1\times R_2 \times NSM^3$
+\For{$j = 0$ to W}
+ \State $M[0, j] \gets 0$
+\EndFor
+\For{i = 1 to N}
+ \For{$j = 1$ to W}
+  \If{($\theta_i > j$)}
+   \State $M[i,j] \gets M[i-1,j]$
+  \Else
+   \State $M[i,j] \gets \max(M[i-1,j],v_i + M[i-1,j-\theta_i])$
+  \EndIf
+ \EndFor
+\EndFor
+\State \Return M
+\EndFunction
+\end{algorithmic}
+}
+\end{algorithm}
+
+\subsection{Example}
+
+ Consider an example with five kernels,  and a GPU with a unique SM, so NSM  is equal to one, and resource capacities $R_0 = 2$,$R_1 = 3$ and $R_2=4$, resulting in W = 60.  The required resources and the respective $\theta_i$ values for each kernel $k_i$ are shown next. 
+
+\begin{center}
+\begin{tabular}{ |c|c|c|c|c|c|c|c|c|c|c|c|c|c| } 
+ \hline
+ $k_i$ & $w_i$ & $\theta_i$ & $v_i$ \\
+ \hline
+ $k_1$ & $(1,1,1)$ & $26$ & $20$ \\
+ \hline
+ $k_2$ & $(1,2,3)$ & $33$ & $40$\\
+ \hline
+ $k_3$ & $(1,0,2)$ & $22$ & $30$ \\
+ \hline
+ $k_4$ & $(1,3,1)$ & $36$ & $60$ \\
+ \hline
+ $k_5$ & $(2,1,1)$ & $51$ & $70$ \\
+ \hline
+\end{tabular}
+\end{center}
+
+Matrix $M$ is built by the dynamic programming method to solve the Knapsack Problem. The following table shows  an example of  a matrix $M$. Remark that each line represents a kernel and each column represents a linearized quantity of resources. So, for example, a column equal to 58 indicates that  2 resources of $R0$, 3 of $R1$ e 3 of $R2$ are selected. 
+
+\begin{center}
+\begin{tabular}{ |c|c|c|c|c|c|c|c|c|c|c|c|c| } 
+ \hline
+ $ $ & 0 & 1 & 2 & ... & 7 & ... & 22 & ... & 57 & 58 & 59 \\
+ \hline
+ 0 & 0 & 0 & 0 & ... & 0 & ... & 0 & ... & 0 & 0 & 0 \\
+ \hline
+ $k_1$ & 0 & 0 & 0 & ... & 0 & ... & 0 & ... & 20 & 20 & 20 \\
+ \hline
+ $k_2$ & 0 & 0 & 0 & ... & 0 & ... & 0 & ... & 40 & 40 & 60 \\
+ \hline
+ $k_3$ & 0 & 0 & 0 & ... & 0 & ... & 30 & ... & 70 & 70 & 70 \\
+ \hline
+ $k_4$ & 0 & 0 & 0 & ... & 0 & ... & 30 & ... & 70 & ? & ? \\
+ \hline
+ $k_5$ & ? & ? & ? & ... & ? & ... & ? & ... & ? & ? & ? \\
+ \hline
+\end{tabular}
+\end{center}
+
+Note, also, that by the algorithm, an element  M[$k_i,j$] can be updated  with  either  $M[k_{i-1},j]$ or $M[k_{i-1},j-\theta_i] + v_i$. The second case occurs when the object  is selected to be included in the knapsack. Is happens, for example, when we consider the cell   $M(k_4,58)$. Because   $v_4 = 60$,   $\theta_4 = 36$  and $M[k_3,58-36] + 60 > M[k_3,58]$, the value of cell  $M(k_4,58)$  is updated with   $M[k_3,22] + 60 = 90$.
+The other case occurs when the object does not produce any profit. It can be illustrated  when the cell $M(k_5,58)$ is calculated. Because $M[k_4,58] > M[k_4,58-51] + 70$,  the cell value $M[k_5,58]$ is updated  with $M[k_4,58] = 90$.
+
+Next, the resulting matrix $M$ after these two updates.
+ 
+\begin{center}
+\begin{tabular}{ |c|c|c|c|c|c|c|c|c|c|c|c|c|c| } 
+ \hline
+ $ $ & 0 & 1 & 2 & ... & 7 & ... & 22 & ... & 57 & 58 & 59 \\
+ \hline
+ 0 & 0 & 0 & 0 & ... & 0 & ... & 0 & ... & 0 & 0 & 0 \\
+ \hline
+ $k_1$ & 0 & 0 & 0 & ... & 0 & ... & 0 & ... & 20 & 20 & 20 \\
+ \hline
+ $k_2$ & 0 & 0 & 0 & ... & 0 & ... & 0 & ... & 40 & 40 & 60 \\
+ \hline
+ $k_3$ & 0 & 0 & 0 & ... & 0 & ... & 0 & ... & 70 & 70 & 70 \\
+ \hline
+ $k_4$ & 0 & 0 & 0 & ... & 0 & ... & 0 & ... & 70 & 90 & 90 \\
+ \hline
+ $k_5$ & 0 & 0 & 0 & ... & 0 & ... & 0 & ... & 70 & 90 & ? \\
+ \hline
+\end{tabular}
+\end{center}

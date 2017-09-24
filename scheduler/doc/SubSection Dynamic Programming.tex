@@ -1,0 +1,38 @@
+\subsection{Dynamic Programming} 
+
+In order to reduce the computational effort in solving the multidimensional knapsack problem, we linearized $W_j$ and $w_{ij}$. $W_j$ was linearized to $W = W_0 \times W_1 \times W_2$, and $w_{ij}$ was linearized to $w_i = (w_{i0} \times R_1 \times R_2) + (w_{i1} \times R_2) + w_{i2}$.
+
+Algorithm \ref{alg:dynamic} presents the main procedure of the dynamic programming approach we used. The algorithm It creates a matrix $M$ of size $(N+1)\times (W+1)$ that contains the 
+
+Basically, the algorithm works as follows. Initially, auxiliary variables are initialized. The $SelectedKernels$ list  contains the selected kernels and is created empty. The auxiliary variable $temp\_W$ contains the current amount of available resources and receives the total capacity of the GPU, $W$.  After that, the  $KnapsackMatrix$ function is called with the parameter $KernelList$ to build $M$. Following, in line 5, for each kernel $k_i$, if there are remaining resources, the algorithm uses the values computed in $M$ to evaluate the possibility of including  $k_i$ in  $SelectedKernels$. If the value of the current line $i$ is different from the previous one in column $temp\_W$ (meaning that the dynamic programming method selected $k_i$), then $k_i$ is selected, included in the list and its resources $w_i$ are subtracted from $tempW$. 
+After all the kernels are visited, $NextSubmitList$ receives the elements of  $SelectedKernels$  ordered in descending order of value by $OrderSet$ (line 10).
+
+
+
+The function $KnapsackMatrix$, detailed in Algorithm \ref{alg:matrix},  creates the matrix $M$.  A line of $M$ represents a kernel  while a column  represents a linearized  quantity of resources. This matrix is initialized in line 3 of Algorithm 3. It can be updated either in line 7  or line 9. In line 7,  a  cell of $M$ is copied to another one,   meaning that the object  (kernel $k_i$) is not selected to be included in  the knapsack (GPU) because it exceeds the remaining capacity of the knapsack, otherwise, it can be  included in the knapsack whether it results in some profit (line 9).
+
+\begin{algorithm}[htb]
+\caption{Dynamic programming- Building of matrix M}
+\label{alg:matrix}
+\footnotesize{
+\begin{algorithmic}[1]
+\Function{KnapsackMatrix}{$KernelList$}
+ %\textbf{Input: } n, w$_1$ ,...,w$_N$, v$_1$ ,...,v$_N$
+%\State W $\gets$ $R_0\times R_1\times R_2 \times NSM^3$
+\For{$j = 0$ to W}
+ \State $M[0, j] \gets 0$
+\EndFor
+\For{i = 1 to N}
+ \For{$j = 1$ to W}
+  \If{($\theta_i > j$)}
+   \State $M[i,j] \gets M[i-1,j]$
+  \Else
+   \State $M[i,j] \gets \max(M[i-1,j],v_i + M[i-1,j-\theta_i])$
+  \EndIf
+ \EndFor
+\EndFor
+\State \Return M
+\EndFunction
+\end{algorithmic}
+}
+\end{algorithm}

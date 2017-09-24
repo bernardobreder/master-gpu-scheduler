@@ -1,0 +1,28 @@
+8 Kernels	Linear	Greed	Dynamic
+32 Blocks	14.1	14.6	13.5
+64 Blocks	15.7	12.4	12.2
+128 Blocks	23.4	15.8	15.9
+256 Blocks	50.4	41.2	39.7
+512 Blocks	84.3	70.8	70.5
+
+16 Kernels	Linear	Greed	Dynamic
+32 Blocks	11.1	9.6	8.8
+64 Blocks	34.2	26.0	22.5
+128 Blocks	46.4	36.7	37.2
+256 Blocks	78.9	55.5	50.6
+512 Blocks	171.3	92.6	93.1
+
+32 Kernels	Linear	Greed	Dynamic
+32 Blocks	23.4	14.8	14.3
+64 Blocks	49.9	34.5	35.0
+128 Blocks	96.6	69.9	70.1
+256 Blocks	151.7	93.5	93.8
+512 Blocks	326.8	199.6	193.2
+
+64 Kernels	Linear	Greed	Dynamic
+32 Blocks	43.0	25.7	26.9
+64 Blocks	87.9	52.5	49.0
+128 Blocks	163.4	95.3	93.9
+256 Blocks	368.8	219.1	223.7
+512 Blocks	668.6	470.9	466.2
+

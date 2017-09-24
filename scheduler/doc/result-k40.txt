@@ -1,0 +1,23 @@
+ 32 Kernels	Standard Average Waiting Time	Dynamic Average Waiting Time	Standard Average Duration Time	Dynamic Average Duration Time	Standard Average End Time	Dynamic Average End Time	Average Gain (ms)	Overhead (ms)	Overhead per Average Gain (%)	Standard ANTT	Dynamic ANTT	Standard STP	Dynamic STP
+  4 to 32 Blocks	1510.811	1011.295	213.792	213.824	1724.603	1225.119	499.484	0.600	0.157	0.639	0.483	52.251	82.875
+  4 to 64 Blocks	2848.699	1862.889	294.476	297.960	3143.175	2160.849	982.327	0.750	0.090	0.759	0.593	42.835	66.301
+  4 to 128 Blocks	5025.202	3562.412	432.610	436.755	5457.812	3999.167	1458.645	0.600	0.056	0.856	0.734	37.645	47.384
+  4 to 256 Blocks	9963.191	7469.145	760.526	763.986	10723.717	8233.130	2490.587	0.900	0.033	0.921	0.852	34.787	38.600
+  4 to 512 Blocks	20401.439	15344.554	1424.774	1431.690	21826.213	16776.244	5049.969	0.550	0.018	0.959	0.928	33.383	34.666
+
+ 64 Kernels	Standard Average Waiting Time	Dynamic Average Waiting Time	Standard Average Duration Time	Dynamic Average Duration Time	Standard Average End Time	Dynamic Average End Time	Average Gain (ms)	Overhead (ms)	Overhead per Average Gain (%)	Standard ANTT	Dynamic ANTT	Standard STP	Dynamic STP
+  4 to 32 Blocks	2994.417	1815.208	206.067	206.427	3200.484	2021.635	1178.850	1.900	0.172	0.600	0.387	114.052	224.457
+  4 to 64 Blocks	5903.503	3511.473	299.836	302.195	6203.339	3813.667	2389.672	1.650	0.070	0.754	0.530	86.515	150.091
+  4 to 128 Blocks	11240.801	7103.032	462.737	465.407	11703.538	7568.440	4135.099	1.600	0.042	0.859	0.679	74.740	108.578
+  4 to 256 Blocks	22846.537	15395.754	828.039	832.887	23674.577	16228.641	7445.936	1.800	0.028	0.940	0.868	68.222	75.481
+  4 to 512 Blocks	44597.359	30183.209	1504.444	1507.291	46101.803	31690.500	14411.303	2.050	0.016	0.965	0.916	66.322	70.721
+
+128 Kernels	Standard Average Waiting Time	Dynamic Average Waiting Time	Standard Average Duration Time	Dynamic Average Duration Time	Standard Average End Time	Dynamic Average End Time	Average Gain (ms)	Overhead (ms)	Overhead per Average Gain (%)	Standard ANTT	Dynamic ANTT	Standard STP	Dynamic STP
+  4 to 32 Blocks	5941.438	3551.581	209.444	210.505	6150.882	3762.085	2388.797	5.100	0.216	0.590	0.346	221.356	521.993
+  4 to 64 Blocks	11246.502	6734.486	290.794	292.405	11537.296	7026.891	4510.405	5.250	0.120	0.731	0.486	176.053	337.123
+  4 to 128 Blocks	21448.183	13255.484	449.002	451.994	21897.185	13707.478	8189.707	5.850	0.074	0.849	0.647	151.734	223.834
+  4 to 256 Blocks	44277.171	28188.362	793.263	795.115	45070.433	28983.477	16086.956	7.050	0.048	0.925	0.804	138.570	164.651
+  4 to 512 Blocks	88627.770	61993.274	1535.162	1540.399	90162.932	63533.673	26629.259	7.350	0.028	0.963	0.907	133.097	142.823
+
+256 Kernels	Standard Average Waiting Time	Dynamic Average Waiting Time	Standard Average Duration Time	Dynamic Average Duration Time	Standard Average End Time	Dynamic Average End Time	Average Gain (ms)	Overhead (ms)	Overhead per Average Gain (%)	Standard ANTT	Dynamic ANTT	Standard STP	Dynamic STP
+  4 to 32 Blocks
